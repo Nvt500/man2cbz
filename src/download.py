@@ -45,14 +45,11 @@ def get_provider() -> str:
     click.clear()
     file_num = 1
     providers = []
-    for file in pathlib.Path(os.path.join(constants.get_root_dir(), "src", "providers")).iterdir():
-        if file.name == "__init__.py" or not file.is_file():
-            continue
-
-        provider_dict = importlib.import_module("src.providers." + file.stem).__dict__
+    for file_name in [key for key in importlib.import_module("src.providers").__dict__.keys() if not key.startswith("__")]:
+        provider_dict = importlib.import_module("src.providers." + file_name).__dict__
         downloader_class = list(provider_dict.values())[-1]
-        click.echo(f"{file_num}. {downloader_class.__doc__ or downloader_class.__name__} ({file.stem})")
-        providers.append(file.stem)
+        click.echo(f"{file_num}. {downloader_class.__doc__ or downloader_class.__name__} ({file_name})")
+        providers.append(file_name)
 
         file_num += 1
 

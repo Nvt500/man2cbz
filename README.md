@@ -104,7 +104,7 @@ Options:
 Takes all the images stored in `temp_images` downloaded from the `download` command and compile them into
 a cbz file or into a folder with html files to read how you would on the actual website. I recommend the 
 [Panels](https://apps.apple.com/us/app/panels-comic-reader/id1236567663) app for cbz file if reading on 
-your phone as it has vertical scrolling. If compiling to html, edge works on the computer and not chrome 
-as it uses javascript's fetch api to get local files stored on the computer, but on the phone the 
+your phone as it has vertical scrolling. If compiling to html, it uses javascript's fetch api to get local 
+files stored on the computer so it doesn't work in normal browsers, but on the phone the 
 [Koder](https://apps.apple.com/us/app/koder-code-editor/id1447489375) app allows for 'hosting' the html 
 files locally in a built-in browser, so I recommend that.

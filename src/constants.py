@@ -1,10 +1,11 @@
 import os
+import sys
 
 
 def get_root_dir() -> str:
     """Get the root directory"""
 
-    return os.getcwd()
+    return os.path.dirname(sys.argv[0])
 
 def get_temp_images_dir() -> str:
     """Get the directory of temp_images"""
