@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "man2cbz"
+version = "0.1.0"
+description = "A cli to download manga/manwha as cbz files."
+authors = ["Nvt5"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+click = "8.2.1"
+requests = "2.32.4"
+cbz = "3.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+man2cbz = "src.man2cbz:cli"
