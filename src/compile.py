@@ -20,13 +20,16 @@ def compile_images(name: str, compile_format: str, verbose: bool) -> None:
         Valid formats: "cbz", "html"
     """
 
-    match compile_format:
-        case "cbz":
-            compile_cbz(name, verbose)
-        case "html":
-            compile_html(name, verbose)
-        case _:
-            raise click.BadParameter(f"Unknown format: {compile_format}.")
+    try:
+        match compile_format:
+            case "cbz":
+                compile_cbz(name, verbose)
+            case "html":
+                compile_html(name, verbose)
+            case _:
+                raise click.BadParameter(f"Unknown compile format: {compile_format}.")
+    except Exception as e:
+        click.echo(f"Error occurred while compiling:\n{e}", err=True)
 
 def compile_html(name: str, verbose: bool) -> None:
     """Compile to a folder with html files to view the manwha in"""

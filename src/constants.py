@@ -14,3 +14,10 @@ def get_temp_images_dir() -> str:
     if not os.path.exists(temp_images_dir):
         os.makedirs(temp_images_dir)
     return temp_images_dir
+
+class ProgError(Exception):
+    """Programmer Error
+
+        Something that should only be raised when a programming
+        mistake happened like calling a method that isn't implemented.
+    """

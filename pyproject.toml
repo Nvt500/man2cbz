@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "man2cbz"
-version = "0.1.0"
+version = "0.1.1"
 description = "A cli to download manga/manwha as cbz files."
 authors = ["Nvt5"]
 license = "MIT"

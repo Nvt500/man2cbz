@@ -1,6 +1,7 @@
 import requests
 import re
 
+from src import constants
 from src.downloader import Downloader
 
 
@@ -34,4 +35,4 @@ class GeneralDownloader(Downloader):
     def get_next_url(self, response: requests.Response) -> str | None:
         """Gets next url"""
 
-        raise Exception("Not implemented.")
+        raise constants.ProgError("Not implemented.")

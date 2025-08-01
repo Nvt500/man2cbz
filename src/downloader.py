@@ -29,7 +29,7 @@ class Downloader:
             urls: urls of chapters, can be None if it isn't possible to get all urls on homepage
         """
         if first_url is None and urls is None:
-            raise ValueError("Either first_url or urls must be defined.")
+            raise constants.ProgError("Either first_url or urls must be defined.")
         self.first_url = first_url or None
         self.urls = urls or None
 
@@ -84,7 +84,6 @@ class Downloader:
             url = self.first_url
             image_amounts = []
             chapter = 1
-            image_len_offset = 0 # When continuing for svg it could reduce length and mess up the new value for max_zeros
 
             while url is not None:
                 response = requests.get(url)
@@ -99,15 +98,17 @@ class Downloader:
                     click.echo(f"Couldn't find any images at {url}.", err=True)
                     return
 
+                for index in range(len(image_urls)-1, -1, -1):
+                    path = pathlib.Path(image_urls[index])
+                    if path.suffix == ".svg":
+                        image_urls.pop(index)
+
                 image_amounts.append([])
                 image_max_zeros = len(str(len(image_urls)))
 
                 images = []
                 for i, image_url in enumerate(image_urls):
                     path = pathlib.Path(image_url)
-                    if path.suffix == ".svg":
-                        image_len_offset += 1
-                        continue
                     image_amounts[chapter-1].append(path.suffix)
                     images.append({
                         "url": image_url,
@@ -127,7 +128,7 @@ class Downloader:
 
             chapter_max_zeros = len(str(len(image_amounts)))
             for chapter, images in enumerate(image_amounts):
-                image_max_zeros = len(str(len(images)+image_len_offset))
+                image_max_zeros = len(str(len(images)))
                 for image, ext in enumerate(images):
                     os.rename(
                         os.path.join(constants.get_temp_images_dir(), f"Chapter{chapter+1}Image{str(image+1).zfill(image_max_zeros)}{ext}"),
@@ -137,12 +138,12 @@ class Downloader:
     def get_image_urls(self, response: requests.Response) -> list[str]:
         """Gets images urls"""
 
-        raise Exception("To be implemented.")
+        raise constants.ProgError("To be implemented.")
 
     def get_next_url(self, response: requests.Response) -> str | None:
         """Gets next url"""
 
-        raise Exception("To be implemented.")
+        raise constants.ProgError("To be implemented.")
 
     @staticmethod
     def download_image(image: {str, str}) -> None:

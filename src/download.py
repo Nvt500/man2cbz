@@ -24,20 +24,26 @@ def download(url: str, provider: str | None) -> None:
         Use --provider as a flag to pick from a list of available providers.
     """
 
-    if provider is None:
-        if url.startswith("https://asuracomic"):
-            AsuraDownloader(url).download()
-        elif url.startswith("https://www.mgeko.cc"):
-            MangaGekkoDownloader(url).download()
-        else:
-            GeneralDownloader(url).download()
-        return
-    if provider == "":
-        provider = get_provider()
+    try:
+        if provider is None:
+            if url.startswith("https://asuracomic"):
+                AsuraDownloader(url).download()
+            elif url.startswith("https://www.mgeko.cc"):
+                MangaGekkoDownloader(url).download()
+            else:
+                GeneralDownloader(url).download()
+            return
+        if provider == "":
+            provider = get_provider()
 
-    provider_dict = importlib.import_module("src.providers." + provider).__dict__
-    downloader = list(provider_dict.values())[-1]
-    downloader(url).download()
+        provider_dict = importlib.import_module("src.providers." + provider).__dict__
+        downloader = list(provider_dict.values())[-1]
+
+        downloader(url).download()
+    except constants.ProgError as e:
+        raise Exception(e)
+    except Exception as e:
+        click.echo(f"Error occurred while downloading:\n{e}", err=True)
 
 def get_provider() -> str:
     """Gets user selected provider from list of available providers"""

@@ -1,5 +1,21 @@
 # man2cbz changelog
 
+## 0.1.1 - 8-1-2025 - Bugfix
+
+- Remove `image_len_offset` variable from `downloader.py` and remove svg images from `image_urls` before
+  adding them to `images` as it led to this error:
+  - `FileNotFoundError: [WinError 2] The system cannot find the file specified: 
+    './man2cbz/temp_images/Chapter1Image001.jpg' -> 
+    './man2cbz/temp_images/Chapter001Image001.jpg'`
+- Caught exceptions with try except to remove long error messages. However, those can still be used by
+  raising `constants.ProgError` in order to see where in the code whatever went wrong
+  - Example: 
+    ```text
+      File "./man2cbz/src/download.py", line 44, in download
+        raise constants.ProgError(e)
+    src.constants.ProgError: Either first_url or urls must be defined.
+    ```
+
 ## 0.1.0 - 7-31-2025 - man2cbz Created
 
 - man2cbz was created with commands:

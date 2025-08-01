@@ -9,7 +9,7 @@ from src.compile import compile_images
 
 @click.group()
 @click.help_option("-h", "--help")
-@click.version_option("0.1.0", "-v", "--version", message="%(prog)s %(version)s", prog_name="man2cbz")
+@click.version_option("0.1.1", "-v", "--version", message="%(prog)s %(version)s", prog_name="man2cbz")
 def cli() -> None:
     """A cli to download manga/manwha as cbz files."""
     pass
