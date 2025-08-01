@@ -1,5 +1,5 @@
 
-# mancbz
+# man2cbz
 
 A cli to download manga/manwha as cbz files.
 
