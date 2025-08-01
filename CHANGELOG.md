@@ -10,4 +10,4 @@
   - General: websites that host a single series like https://www.solo-levelingmanhwa.com/ or
   https://w14.fffclass-trashero.com/
   - Asura Scans: https://asuracomic.net/
-  - Manga Gekko (I think that's the name): https://www.mgeko.cc/`
+  - Manga Gekko (I think that's the name): https://www.mgeko.cc/
