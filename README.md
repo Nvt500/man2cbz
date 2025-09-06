@@ -102,9 +102,60 @@ Options:
 ```
 
 Takes all the images stored in `temp_images` downloaded from the `download` command and compile them into
-a cbz file or into a folder with html files to read how you would on the actual website. I recommend the 
-[Panels](https://apps.apple.com/us/app/panels-comic-reader/id1236567663) app for cbz file if reading on 
-your phone as it has vertical scrolling. If compiling to html, it uses javascript's fetch api to get local 
-files stored on the computer so it doesn't work in normal browsers, but on the phone the 
-[Koder](https://apps.apple.com/us/app/koder-code-editor/id1447489375) app allows for 'hosting' the html 
-files locally in a built-in browser, so I recommend that.
+a cbz file or into a folder with html files to read how you would on the actual website. If the website 
+has their images in .webp files `compile -f cbz` will not work as PIL does not support .webp files.
+
+## Host
+
+```text
+Usage: man2cbz host [OPTIONS] NAME
+
+  Host a series' folder locally
+
+  NAME: the name of the folder to host
+
+  This works ONLY for compiled as html
+
+Options:
+  -h, --help     Show this message and exit.
+  -v, --verbose  Show more information.
+```
+
+This command allows hosting a series (that was compiled as html) without external tools. If on a phone
+I recommend the [Koder](https://apps.apple.com/us/app/koder-code-editor/id1447489375) app as it allows for 
+hosting the html files locally in a built-in browser because the html files use javascript's fetch api to get local files 
+stored on the computer so it doesn't work in normal browsers.
+
+## Ui
+
+```text
+Usage: man2cbz ui [OPTIONS]
+
+  Open a ui to read cbz files locally
+
+Options:
+  -h, --help  Show this message and exit.
+```
+
+This command uses tkinter to allow reading cbz files without external tools. If on a phone I recommend
+the [Panels](https://apps.apple.com/us/app/panels-comic-reader/id1236567663) app as it has vertical 
+scrolling.
+
+## Convert
+
+```text
+Usage: man2cbz convert [OPTIONS] NAME
+
+  Converts series to and from each format
+
+  If it's a cbz file it will be converted to html and vice versa
+
+  It will not delete the original file(s) or anything in temp_images
+
+Options:
+  -h, --help     Show this message and exit.
+  -v, --verbose  Show more information.
+```
+
+This command allows converting the two formats to each other without having to download the series and 
+compile again.

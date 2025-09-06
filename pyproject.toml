@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "man2cbz"
-version = "0.1.1"
+version = "0.2.0"
 description = "A cli to download manga/manwha as cbz files."
 authors = ["Nvt5"]
 license = "MIT"
@@ -12,8 +12,9 @@ packages = [
 [tool.poetry.dependencies]
 python = "3.13"
 click = "8.2.1"
-requests = "2.32.4"
-cbz = "3.4.2"
+requests = "2.32.5"
+cbz = "3.4.3"
+flask = "3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 PyInstaller = "6.14.2"

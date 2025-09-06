@@ -1,0 +1,108 @@
+name: Build and Create Release for man2cbz
+
+on:
+  push:
+    paths:
+      - src/**
+  workflow_dispatch:
+
+jobs:
+  build_and_release_windows:
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+
+    - name: Install Dependencies
+      run: | 
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build man2cbz
+      run: pyinstaller src/man2cbz.spec --distpath dist --workpath build
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: man2cbz_windows
+        path: dist/man2cbz.exe
+
+    - id: get_version
+      run: |
+        $version = (& dist/man2cbz --version) -replace '^man2cbz\s+', 'v'
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+
+    - id: get_body
+      run: |
+        $lines = Get-Content CHANGELOG.md
+        $firstMatch = $lines | Where-Object { $_ -match '^##\s+\d+\.\d+\.\d+' } | Select-Object -First 1
+        $start = $lines.IndexOf($firstMatch)
+
+        $rest = $lines[($start + 1)..($lines.Count - 1)]
+        $nextMatch = $rest | Where-Object { $_ -match '^##\s+\d+\.\d+\.\d+' } | Select-Object -First 1
+        $end = if ($nextMatch) { $lines.IndexOf($nextMatch) - 1 } else { $lines.Count - 1 }
+
+        $latest = $lines[$start..$end]
+        $text = $latest -join "`n"
+
+        echo "body<<EOF" >> $env:GITHUB_OUTPUT
+        echo "$text" >> $env:GITHUB_OUTPUT
+        echo "EOF" >> $env:GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        release_name: ${{ steps.get_version.outputs.version }}
+        body: | 
+          ${{ steps.get_body.outputs.body }}
+
+    - name: Upload to Release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: dist/man2cbz.exe
+        tag: ${{ steps.get_version.outputs.version }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build_and_release_linux:
+    runs-on: ubuntu-latest
+    needs: build_and_release_windows
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build man2cbz
+        run: pyinstaller src/man2cbz.spec --distpath dist --workpath build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: man2cbz_linux
+          path: dist/man2cbz
+
+      - name: Upload to Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: dist/man2cbz
+          tag: ${{ needs.build_and_release_windows.outputs.version }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}

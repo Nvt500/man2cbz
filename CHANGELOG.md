@@ -1,5 +1,11 @@
 # man2cbz changelog
 
+## 0.2.0 - 9-6-2025 - 3 New Commands
+
+- Added the `host` command which allows hosting html files locally without any external tools
+- Added the `ui` command which allows for reading cbz files locally without any external tools
+- Added the `convert` command which allows for converting series between each format (cbz and html)
+
 ## 0.1.1 - 8-1-2025 - Bugfix
 
 - Remove `image_len_offset` variable from `downloader.py` and remove svg images from `image_urls` before

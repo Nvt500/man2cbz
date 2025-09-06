@@ -20,6 +20,10 @@ def compile_images(name: str, compile_format: str, verbose: bool) -> None:
         Valid formats: "cbz", "html"
     """
 
+    if len(os.listdir(constants.get_temp_images_dir())) == 0:
+        click.echo(f"No images found in {constants.get_temp_images_dir()} to compile.", err=True)
+        return
+
     try:
         match compile_format:
             case "cbz":
@@ -29,7 +33,7 @@ def compile_images(name: str, compile_format: str, verbose: bool) -> None:
             case _:
                 raise click.BadParameter(f"Unknown compile format: {compile_format}.")
     except Exception as e:
-        click.echo(f"Error occurred while compiling:\n{e}", err=True)
+        click.echo(f"Error occurred while compiling:\n\t{e}", err=True)
 
 def compile_html(name: str, verbose: bool) -> None:
     """Compile to a folder with html files to view the manwha in"""
@@ -53,7 +57,7 @@ def compile_html(name: str, verbose: bool) -> None:
 
         images_json.setdefault(chapter, {})
         images_json[chapter].setdefault("images", [])
-        images_json[chapter]["images"].append(file.name)
+        images_json[chapter]["images"].append(os.path.join(chapter, file.name))
 
     all_dirs = list(pathlib.Path(directory).iterdir())
     all_dirs = [d for d in all_dirs if d.is_dir()]
@@ -109,6 +113,7 @@ def compile_html(name: str, verbose: bool) -> None:
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        width: 99%;
     }
     a {
         margin: 50px;
@@ -117,6 +122,22 @@ def compile_html(name: str, verbose: bool) -> None:
     #top, #bottom {
         flex-direction: row;
     }
+
+    @media (max-width: 1000px) {
+        a {
+            font-size: 36px;
+            padding: 40px;
+            background: blue;
+            color: white;
+        }
+        #bottom {
+            margin-bottom: 600px;
+        }
+        img {
+            width: 100%;
+        }
+    }
+
 </style>
 <script>
     function getChapter()
@@ -134,7 +155,7 @@ def compile_html(name: str, verbose: bool) -> None:
                 {
                     const img = document.createElement("img");
                     img.alt = "Loading " + image + "...";
-                    img.src = params.get("chapter") + "/" + image;
+                    img.src = image;
                     container.appendChild(img);
                 }
                 const top = document.querySelector("#top");
@@ -177,12 +198,21 @@ def compile_cbz(name: str, verbose: bool) -> None:
     paths = list(pathlib.Path(constants.get_temp_images_dir()).iterdir())
 
     pages = []
+    ignore = False
     for i, path in enumerate(paths):
+        if path.suffix == ".webp":
+            if ignore:
+                continue
+            if click.confirm(f"PIL does not support webp files. Skip webp files in compilation?", abort=True):
+                ignore = True
+                continue
+
         if verbose:
             click.echo(f"Compiling {path}.")
         pages.append(cbz.PageInfo.load(
             path=path,
             type=PageType.FRONT_COVER if i == 0 else PageType.BACK_COVER if i == len(paths) - 1 else PageType.STORY,
+            key=path.name,
         ))
 
     comic = cbz.ComicInfo.from_pages(

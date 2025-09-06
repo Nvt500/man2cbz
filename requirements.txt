@@ -1,3 +1,4 @@
-requests==2.32.4
 click==8.2.1
-cbz==3.4.2
+requests==2.32.5
+cbz==3.4.3
+flask==3.1.2
